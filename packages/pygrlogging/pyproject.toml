@@ -3,7 +3,7 @@ name = "pygrlogging"
 authors = [
     {name = "ruizgabriel161",email = "ruizgabriel161@outlook.com"}
 ]
-version = "0.1.0"
+version = "0.1.1"
 description = "Biblioteca para configurar Logs" 
 # ============================
 # Build e Setuptools

@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta, timezone
 import json
 import logging
+from datetime import datetime, timedelta, timezone
 from typing import Any, override
-from zoneinfo import ZoneInfo
-
 
 LOG_RECORD_KEYS = [
     "name",
@@ -38,7 +36,7 @@ class JSONLogFormatter(logging.Formatter):
         include_keys: list[str] | None = None,
         datefmt: str = "%Y-%m-%dT%H:%M:%S%z",
     ) -> None:
-        super(JSONLogFormatter, self).__init__()
+        super().__init__()
         self.include_keys = (
             include_keys if include_keys is not None else LOG_RECORD_KEYS
         )
@@ -53,13 +51,12 @@ class JSONLogFormatter(logging.Formatter):
         }
 
         if "created" in dict_record:
-            #sobreescreve o formato de data e hora
+            # sobreescreve o formato de data e hora
             dict_record["created"] = self.formatTime(
-                record=record, datefmt=self.datefmt
+                record=record, datefmt=self.datefmt,
             )
 
         if "message" in self.include_keys:
-            #
             dict_record["message"] = record.getMessage()
 
         if "exc_info" in dict_record and record.exc_info:

@@ -8,7 +8,7 @@ LogLevel: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 class SettingsLooging(BaseSettings):
     model_config: SettingsConfigDict = SettingsConfigDict(
-    env_file='.env',  # determina onde está armazena as variaveis de ambiente, 
+    env_file='.env',  # determina onde está armazena as variaveis de ambiente,
     extra='ignore', # permite variáveis desconhecidas,
     case_sensitive=True
     )
@@ -29,17 +29,18 @@ class SettingsLooging(BaseSettings):
     @classmethod
     def validate_logs_dir(cls, path: Path | str) -> Path:
         '''
-        validate_logs_dir Método responsável por verificar e garantir a existência de uma página de logs
+        validate_logs_dir Método responsável por
+        garantir a existência de uma página de logs
 
         Args:
             path (Path | str): caminho do arquivo
 
         Returns:
             Path: caminho da pasta de logs
-        '''        
+        '''
         if isinstance(path, str):
             path = Path(path).resolve()
-        
+
         if not path.is_dir():
             path.mkdir(parents=True, exist_ok=True)
         return path
@@ -48,7 +49,8 @@ class SettingsLooging(BaseSettings):
     @classmethod
     def validate_logs_file(cls, path: Path) -> Path:
         '''
-        validate_logs_file Método responsável por verificar a existência do arquivo de configuração
+        validate_logs_file Método responsável por verificar
+        a existência do arquivo de configuração
 
         Args:
             path (Path): Caminho do arquivo
@@ -58,7 +60,7 @@ class SettingsLooging(BaseSettings):
 
         Returns:
             Path: retorna o caminho
-        '''        
+        '''
 
         if isinstance(path, str):
             path = Path(path).resolve()
@@ -76,14 +78,13 @@ class SettingsLooging(BaseSettings):
             level (str): level padrão do log
 
         Raises:
-            ValueError: erro caso o level não exista    
+            ValueError: erro caso o level não exista
 
         Returns:
             LogLevel: retorna o level padrão
-        '''        
+        '''
         level = level.upper()
         if level not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
              msg = 'Level escolhido não suportado pelo Logging'
              raise ValueError(msg)
         return level #pyright: ignore
-    

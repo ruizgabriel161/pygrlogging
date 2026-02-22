@@ -5,6 +5,8 @@ from logging.config import dictConfig
 from logging.handlers import QueueHandler, QueueListener
 from pathlib import Path
 
+from pygrlogging.template_log_config import TemplateJson
+
 
 class LoggingConfig:
     """
@@ -25,19 +27,26 @@ class LoggingConfig:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, config_file: str | Path, logs_dir: str | Path):
+    def __init__(
+        self,
+        config_file: str | Path,
+        logs_dir: str | Path
+    ):
 
         if self._initialized:
             return
 
         self.config_file: Path = Path(config_file).resolve()
         self.logs_dir = Path(logs_dir).resolve()
+        self._ensure_config_file()
         self._queue_handler: QueueHandler | None = None
         self._queue_listener: QueueListener | None = None
-        self.logger: logging.Logger = logging.getLogger("config_setup")
+        self.logger: logging.Logger = logging.getLogger('config_setup')
         self.logger.setLevel(logging.DEBUG)
         self._setup_logging()
 
+        self._initialized = True
+         
     def _setup_logging(self) -> None:
         """
         _setup_logging Método responsável a configuração dos logs da aplicação
@@ -52,10 +61,10 @@ class LoggingConfig:
             self._queue_handler = self._get_queue_handler()
 
             self._setup_queue_listener()
-            self.logger.debug("Logging configurado com sucesso")
-            
+            self.logger.debug('Logging configurado com sucesso')
+
         except Exception as e:
-            self.logger.error(f"Erro ao configurar logging: {e}")
+            self.logger.error(f'Erro ao configurar logging: {e}')
             raise
 
     def _setup_queue_listener(self) -> None:
@@ -79,13 +88,25 @@ class LoggingConfig:
         ]
 
         if len(queue_handlers) > 1:
-            msg = "Não é permitido mais de um QueueHandler"
+            msg = 'Não é permitido mais de um QueueHandler'
             self.logger.exception(msg=msg)
             raise RuntimeError(msg)
 
         if len(queue_handlers) == 1:
             return queue_handlers[0]
         return None
+
+    def _ensure_config_file(self) -> None:
+        '''
+        _ensure_config_file Metodo responsável criar o template
+
+        Args:
+            create_config_file (bool): _description_
+        '''
+        if not self.config_file.exists():
+            template_log_config = TemplateJson()
+            template_log_config.dict_to_json(self.config_file)
+            return
 
     def _load_config(self) -> dict:
         """
@@ -94,10 +115,10 @@ class LoggingConfig:
         Returns:
             dict: retorna o json em dicionário
         """
-        with self.config_file.open("r", encoding="utf8") as file:
+        with self.config_file.open('r', encoding='utf8') as file:
             return json.load(file)
 
-    def get_logger(self, name: str = "") -> logging.Logger:
+    def get_logger(self, name: str = '') -> logging.Logger:
         """
         Retorna um logger configurado.
 
